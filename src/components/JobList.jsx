@@ -1,20 +1,23 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { JobPosition } from './JobPosition'
-import { selectAllPositions } from 'store/positions/position-selectors'
+import { JobPosition } from './JobPosition.jsx'
+import { selectVisiblePositions } from 'store/positions/position-selectors'
+import { selectAllFilters } from 'store/filters/filter-selectors'
+
 import { addFilter } from 'store/filters/filter-action'
 
 const JobList = () => {
-  const positions = useSelector(selectAllPositions)
   const dispatch = useDispatch()
+  const currentFilters = useSelector(selectAllFilters)
+  const positions = useSelector((state) => selectVisiblePositions(state, currentFilters))
 
-  const handleClearFilters = (filter) => {
+  const handleAddFilter = (filter) => {
     dispatch(addFilter(filter))
   }
 
   return (
     <div className="job-list">
       {positions.map((item) => (
-        <JobPosition key={item.id} handleClearFilters={handleClearFilters} {...item} />
+        <JobPosition key={item.id} handleAddFilter={handleAddFilter} {...item} />
       ))}
     </div>
   )
